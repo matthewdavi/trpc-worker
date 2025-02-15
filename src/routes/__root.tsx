@@ -49,12 +49,12 @@ function RootComponent() {
           Worker Search
         </Link>
         <Link
-          to="/name-search/client"
+          to="/name-search/main-thread"
           activeProps={{
             className: "font-bold",
           }}
         >
-          Client Search
+          Main Thread Search
         </Link>
       </div>
       <hr />

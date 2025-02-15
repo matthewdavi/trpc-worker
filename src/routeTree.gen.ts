@@ -14,7 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as NameSearchWorkerImport } from './routes/name-search/worker'
-import { Route as NameSearchClientImport } from './routes/name-search/client'
+import { Route as NameSearchMainThreadImport } from './routes/name-search/main-thread'
 
 // Create/Update Routes
 
@@ -36,9 +36,9 @@ const NameSearchWorkerRoute = NameSearchWorkerImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const NameSearchClientRoute = NameSearchClientImport.update({
-  id: '/name-search/client',
-  path: '/name-search/client',
+const NameSearchMainThreadRoute = NameSearchMainThreadImport.update({
+  id: '/name-search/main-thread',
+  path: '/name-search/main-thread',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,11 +60,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/name-search/client': {
-      id: '/name-search/client'
-      path: '/name-search/client'
-      fullPath: '/name-search/client'
-      preLoaderRoute: typeof NameSearchClientImport
+    '/name-search/main-thread': {
+      id: '/name-search/main-thread'
+      path: '/name-search/main-thread'
+      fullPath: '/name-search/main-thread'
+      preLoaderRoute: typeof NameSearchMainThreadImport
       parentRoute: typeof rootRoute
     }
     '/name-search/worker': {
@@ -82,14 +82,14 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/name-search/client': typeof NameSearchClientRoute
+  '/name-search/main-thread': typeof NameSearchMainThreadRoute
   '/name-search/worker': typeof NameSearchWorkerRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/name-search/client': typeof NameSearchClientRoute
+  '/name-search/main-thread': typeof NameSearchMainThreadRoute
   '/name-search/worker': typeof NameSearchWorkerRoute
 }
 
@@ -97,20 +97,20 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/name-search/client': typeof NameSearchClientRoute
+  '/name-search/main-thread': typeof NameSearchMainThreadRoute
   '/name-search/worker': typeof NameSearchWorkerRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/name-search/client' | '/name-search/worker'
+  fullPaths: '/' | '/about' | '/name-search/main-thread' | '/name-search/worker'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/name-search/client' | '/name-search/worker'
+  to: '/' | '/about' | '/name-search/main-thread' | '/name-search/worker'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/name-search/client'
+    | '/name-search/main-thread'
     | '/name-search/worker'
   fileRoutesById: FileRoutesById
 }
@@ -118,14 +118,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  NameSearchClientRoute: typeof NameSearchClientRoute
+  NameSearchMainThreadRoute: typeof NameSearchMainThreadRoute
   NameSearchWorkerRoute: typeof NameSearchWorkerRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  NameSearchClientRoute: NameSearchClientRoute,
+  NameSearchMainThreadRoute: NameSearchMainThreadRoute,
   NameSearchWorkerRoute: NameSearchWorkerRoute,
 }
 
@@ -141,7 +141,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/name-search/client",
+        "/name-search/main-thread",
         "/name-search/worker"
       ]
     },
@@ -151,8 +151,8 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/name-search/client": {
-      "filePath": "name-search/client.tsx"
+    "/name-search/main-thread": {
+      "filePath": "name-search/main-thread.tsx"
     },
     "/name-search/worker": {
       "filePath": "name-search/worker.tsx"

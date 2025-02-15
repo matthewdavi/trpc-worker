@@ -10,8 +10,6 @@ const NAMES_POOL = {
   lastName: Array.from({ length: 1_000_000 }, () => faker.person.lastName()),
 };
 
-console.log("running faker router");
-
 export const fakerRouter = router({
   generateNames: publicProcedure
     .input(
@@ -54,7 +52,7 @@ export const fakerRouter = router({
             id: crypto.randomUUID(),
           };
         });
-      console.log(filteredNames, "filtered");
+
       return filteredNames;
     }),
 });

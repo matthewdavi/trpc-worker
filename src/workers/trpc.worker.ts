@@ -12,9 +12,9 @@ const caller = appRouter.createCaller({});
 self.onmessage = async (event) => {
   try {
     const { type, path, input, requestId } = event.data;
-    console.log(event);
+
     const result = await (caller as any)[path](input);
-    console.log(result, "sending this result");
+
     self.postMessage({
       success: true,
       result,

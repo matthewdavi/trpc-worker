@@ -61,7 +61,7 @@ function QueryData() {
   );
 
   const names = namesQuery.data;
-  console.log(names, filter, "rendered");
+
   return (
     <div className="w-full flex flex-col gap-4 items-center justify-center">
       {namesQuery.isLoading && (

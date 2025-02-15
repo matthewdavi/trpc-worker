@@ -4,7 +4,7 @@ import { VList } from "virtua";
 import { z } from "zod";
 import { Suspense } from "react";
 
-export const Route = createFileRoute("/name-search/client")({
+export const Route = createFileRoute("/name-search/main-thread")({
   component: RouteComponent,
   wrapInSuspense: true,
   pendingComponent: () => <div>Loading...</div>,

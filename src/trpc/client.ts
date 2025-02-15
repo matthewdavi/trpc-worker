@@ -2,7 +2,6 @@ import { createTRPCQueryUtils, createTRPCReact } from "@trpc/react-query";
 import type { AppRouter } from "../workers/trpc.worker";
 import { observable } from "@trpc/server/observable";
 import { QueryClient } from "@tanstack/react-query";
-import { TRPCClientError } from "@trpc/client";
 
 // Create the tRPC React hooks
 export const trpc = createTRPCReact<AppRouter>();
