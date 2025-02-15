@@ -6,7 +6,7 @@ export const greetingRouter = router({
     .input(z.object({ name: z.string() }))
     .query(({ input }) => {
       return {
-        greeting: `Hello ${input.name}!`,
+        greeting: `Hello from the worker, ${input.name}!`,
         timestamp: new Date().toISOString(),
       };
     }),

@@ -25,6 +25,14 @@ function HomeComponent() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">tRPC Web Worker Demo</h1>
 
+      <p>
+        This is a demo of how to use tRPC with a web worker. It is using the
+        main thread to send requests and receive responses.
+        <br />
+        Click on that increment button and it will send a react query mutation
+        to another thread.
+      </p>
+      <p>Type in your name and it will send a request to the worker.</p>
       <div className="mb-6">
         <input
           type="text"
