@@ -82,7 +82,14 @@ export const trpcClient = trpc.createClient({
   ],
 });
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 100, // sending huge responses, so we need to gc them
+      staleTime: 100,
+    },
+  },
+});
 export const clientUtils = createTRPCQueryUtils({
   queryClient,
   client: trpcClient,
