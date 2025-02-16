@@ -5,7 +5,9 @@ import { QueryClient } from "@tanstack/react-query";
 import TRPCWorker from "../workers/trpc.worker?worker";
 
 // Create the tRPC React hooks
-export const trpc = createTRPCReact<AppRouter>();
+export const trpc = createTRPCReact<AppRouter>({
+  abortOnUnmount: true,
+});
 
 class TRPCWorkerPool {
   private static readonly POOL_SIZE = 4;
@@ -15,11 +17,13 @@ class TRPCWorkerPool {
 
   private static initialize() {
     if (!this.isInitialized) {
+      console.time("initializing worker pool");
       this.workers = Array.from(
         { length: this.POOL_SIZE },
         () => new TRPCWorker()
       );
       this.isInitialized = true;
+      console.timeEnd("initializing worker pool");
     }
   }
 
@@ -51,7 +55,7 @@ export const trpcClient = trpc.createClient({
 
           // Create a dedicated MessageChannel for this request.
           const channel = new MessageChannel();
-
+          console.log("channel created");
           channel.port1.onmessage = (event: MessageEvent) => {
             const {
               result,
@@ -63,6 +67,9 @@ export const trpcClient = trpc.createClient({
               responseId,
               (responseIdCount.get(responseId) ?? 0) + 1
             );
+            if (op.signal?.aborted) {
+              return;
+            }
             if (requestId !== responseId) {
               console.log("requestId !== responseId", requestId, responseId);
               debugger;
@@ -80,6 +87,7 @@ export const trpcClient = trpc.createClient({
             channel.port1.close();
           };
 
+          console.time("posting message");
           // Transfer the other port along with the request.
           trpcWorker.postMessage(
             {
@@ -90,6 +98,7 @@ export const trpcClient = trpc.createClient({
             },
             [channel.port2]
           );
+          console.timeEnd("posting message");
         }),
   ],
 });

@@ -10,6 +10,7 @@ const appRouter = router({
 export type AppRouter = typeof appRouter;
 const caller = appRouter.createCaller({});
 self.onmessage = async (event) => {
+  console.log("received message");
   const { type, path, input, requestId } = event.data;
   // Check if a dedicated message port was provided.
   const port = event.ports && event.ports[0];

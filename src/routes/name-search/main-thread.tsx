@@ -11,7 +11,7 @@ export const Route = createFileRoute("/name-search/main-thread")({
   validateSearch: z.object({
     count: z.number().min(1).max(1_000_000).default(1_000_000),
     nameType: z.enum(["fullName", "firstName", "lastName"]).default("fullName"),
-    filter: z.string().optional(),
+    filter: z.string().optional().default(""),
   }),
   loaderDeps(opts) {
     return {
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/name-search/main-thread")({
 });
 
 function RouteComponent() {
-  const { filter } = Route.useSearch();
+  const { filter = "" } = Route.useSearch();
   const navigate = Route.useNavigate();
 
   return (
