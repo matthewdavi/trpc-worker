@@ -52,10 +52,33 @@ export const trpcClient = trpc.createClient({
         observable((observer) => {
           const trpcWorker = TRPCWorkerPool.getWorker();
           const requestId = crypto.randomUUID();
-
-          // Create a dedicated MessageChannel for this request.
           const channel = new MessageChannel();
-          console.log("channel created");
+
+          // Store cleanup function for abort listener
+          let removeAbortListener: (() => void) | undefined;
+
+          if (op.signal?.aborted) {
+            channel.port2.postMessage({
+              type: "abort",
+              requestId,
+            });
+            observer.complete();
+            return;
+          }
+          if (op.signal) {
+            const abortHandler = () => {
+              channel.port2.postMessage({
+                type: "abort",
+                requestId,
+              });
+              observer.complete();
+            };
+            op.signal.addEventListener("abort", abortHandler, { once: true });
+            removeAbortListener = () => {
+              op.signal?.removeEventListener("abort", abortHandler);
+            };
+          }
+
           channel.port1.onmessage = (event: MessageEvent) => {
             const {
               result,
@@ -68,11 +91,13 @@ export const trpcClient = trpc.createClient({
               (responseIdCount.get(responseId) ?? 0) + 1
             );
             if (op.signal?.aborted) {
+              observer.complete();
               return;
             }
+
             if (requestId !== responseId) {
               console.log("requestId !== responseId", requestId, responseId);
-              debugger;
+              observer.complete();
               return;
             }
 
@@ -99,6 +124,12 @@ export const trpcClient = trpc.createClient({
             [channel.port2]
           );
           console.timeEnd("posting message");
+
+          return () => {
+            // Cleanup function for observable
+            channel.port1.close();
+            removeAbortListener?.();
+          };
         }),
   ],
 });
