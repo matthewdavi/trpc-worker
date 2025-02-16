@@ -5,9 +5,15 @@ import { faker } from "@faker-js/faker";
 faker.seed(123);
 // Generate a pool of 1 million names of each type
 const NAMES_POOL = {
-  fullName: Array.from({ length: 1_000_000 }, () => faker.person.fullName()),
-  firstName: Array.from({ length: 1_000_000 }, () => faker.person.firstName()),
-  lastName: Array.from({ length: 1_000_000 }, () => faker.person.lastName()),
+  fullName: Array.from({ length: 1_000_000 }, () =>
+    faker.person.fullName()
+  ).map((name) => ({ name, id: crypto.randomUUID() })),
+  firstName: Array.from({ length: 1_000_000 }, () =>
+    faker.person.firstName()
+  ).map((name) => ({ name, id: crypto.randomUUID() })),
+  lastName: Array.from({ length: 1_000_000 }, () =>
+    faker.person.lastName()
+  ).map((name) => ({ name, id: crypto.randomUUID() })),
 };
 
 export const fakerRouter = router({
@@ -23,12 +29,7 @@ export const fakerRouter = router({
     )
     .query(({ input }) => {
       const poolArray = NAMES_POOL[input.nameType];
-      return poolArray.slice(0, input.count).map((name) => {
-        return {
-          name,
-          id: crypto.randomUUID(),
-        };
-      });
+      return poolArray.slice(0, input.count);
     }),
   filterNames: publicProcedure
     .input(
@@ -41,17 +42,19 @@ export const fakerRouter = router({
       })
     )
     .query(({ input }) => {
+      if (input.searchTerm.length === 0) {
+        return NAMES_POOL[input.nameType].slice(0, input.count);
+      }
       const filteredNames = NAMES_POOL[input.nameType]
-        .filter((name) =>
-          name.toLowerCase().includes(input.searchTerm.toLowerCase())
-        )
-        .slice(0, input.count)
-        .map((name) => {
-          return {
-            name,
-            id: crypto.randomUUID(),
-          };
-        });
+        .filter((name) => {
+          if (input.searchTerm.length === 0) {
+            return true;
+          }
+          return name.name
+            .toLowerCase()
+            .includes(input.searchTerm.toLowerCase());
+        })
+        .slice(0, input.count);
 
       return filteredNames;
     }),

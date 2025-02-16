@@ -10,6 +10,7 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { WorkerTRPCProvider } from "../trpc/provider";
 import { clientUtils } from "../trpc/client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools/production";
+import { AnimatedSquare } from "./name-search/-animated-square";
 
 interface RootContext {
   trpc: typeof clientUtils;

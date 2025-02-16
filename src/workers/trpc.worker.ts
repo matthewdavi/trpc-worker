@@ -10,21 +10,40 @@ const appRouter = router({
 export type AppRouter = typeof appRouter;
 const caller = appRouter.createCaller({});
 self.onmessage = async (event) => {
+  const { type, path, input, requestId } = event.data;
+  // Check if a dedicated message port was provided.
+  const port = event.ports && event.ports[0];
+
   try {
-    const { type, path, input, requestId } = event.data;
-
+    const startTime = performance.now();
     const result = await (caller as any)[path](input);
-
-    self.postMessage({
+    const endTime = performance.now();
+    console.log(`${path} took ${endTime - startTime}ms`);
+    const message = {
       success: true,
       result,
       requestId,
-    });
+    };
+
+    if (port) {
+      const startPortTime = performance.now();
+      port.postMessage(message);
+      const endPortTime = performance.now();
+      console.log(`port.postMessage took ${endPortTime - startPortTime}ms`);
+    } else {
+      self.postMessage(message);
+    }
   } catch (error) {
-    self.postMessage({
+    const message = {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
-      requestId: event.data.requestId,
-    });
+      requestId,
+    };
+
+    if (port) {
+      port.postMessage(message);
+    } else {
+      self.postMessage(message);
+    }
   }
 };

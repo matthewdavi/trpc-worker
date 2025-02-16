@@ -9,7 +9,7 @@ export const Route = createFileRoute("/name-search/worker")({
   wrapInSuspense: true,
   pendingComponent: () => <div>Loading...</div>,
   validateSearch: z.object({
-    count: z.number().min(1).max(1_000_000).default(1_000_000),
+    count: z.number().min(1).max(1_000_000).default(500_000),
     nameType: z.enum(["fullName", "firstName", "lastName"]).default("fullName"),
     filter: z.string().optional(),
   }),
@@ -33,7 +33,7 @@ function RouteComponent() {
       <div className="max-w-4xl mx-auto">
         <input
           type="text"
-          value={filter}
+          value={filter ?? ""}
           onChange={(e) => navigate({ search: { filter: e.target.value } })}
           className="w-full px-4 py-3 text-lg rounded-lg border-2 border-gray-300 
             bg-white shadow-md placeholder-gray-400
